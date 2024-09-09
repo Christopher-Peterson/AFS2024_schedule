@@ -64,14 +64,14 @@ talk_info = useful_sessions |>
   mutate(scraped_data = map(session_html, parse_session)) |>
   unnest(scraped_data) |> 
   mutate(times = str_replace(times, 'M', 'M -'))
-talk_info = read_rds('scrape/afs_2024_talk_info.rds')
+# talk_info = read_rds('scrape/afs_2024_talk_info.rds')
 all_talks =  talk_info |> #select(author, affiliation, times, numeric_date, session_room, title, session_name,session_id, abstract_id) |> 
   mutate(author = str_remove(author, ',.+') |> str_remove_all(fixed('(')) |> str_remove_all(fixed(')')),
          first = first_name(author), last = last_name(author),
          print_date = numeric_date |> strftime('%a, %m/%d'),
          mdl = middle_name(author), mdl = if_else(is.na(mdl), '', paste0(' ', mdl)), 
          author_last = glue("{str_to_title(last)}, {str_to_title(first)}{str_to_title(mdl)}"),
-         sessioN_id = str_remove(session_id, "Sess"),
+         session_id = str_remove(session_id, "Sess"),
          session_url = glue('https://www.xcdsystem.com/afs/program/y7rKVr9/index.cfm?pgid=1485&sid={session_id}'),
          title_url = glue('https://www.xcdsystem.com/afs/program/y7rKVr9/index.cfm?pgid=1485&sid={session_id}&abid={abstract_id}'),
          title_md = glue("[{title}]({title_url})"),
