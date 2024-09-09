@@ -1,8 +1,6 @@
 ---
 title: "Talks by Presenter's Last Name"
-output: 
-  github_document:
-    toc: true
+output:  github_document
 ---
 ```{r fn_def, echo = FALSE, }
 suppressPackageStartupMessages({
