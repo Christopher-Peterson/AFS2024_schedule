@@ -9,5 +9,5 @@ schedules to see more recent changes.
 
 ## Schedule organized by presenter’s name:
 
-- [By Last Name](afs_schedule_byauthor.html)
-- [By First Name](afs_schedule_byauthor_first.html)
+- [By Last Name](afs_schedule_byauthor.md)
+- [By First Name](afs_schedule_byauthor_first.md)
