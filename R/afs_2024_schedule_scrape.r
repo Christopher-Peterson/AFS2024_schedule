@@ -83,7 +83,7 @@ all_talks =  talk_info |> #select(author, affiliation, times, numeric_date, sess
       ),
   start_time = times |> str_remove(' -.+'),
   end_time = times |> str_remove(".+- "),
-  short_times = str_remove_all(times, ' (A|P)M')) |> 
+  short_times = str_remove_all(times, ' (A|P)M ?')) |> 
   select(-session_html)
 
 write_rds(all_talks, 'scrape/afs_2024_talk_info.rds')

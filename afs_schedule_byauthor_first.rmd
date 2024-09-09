@@ -33,11 +33,16 @@ all_talks = read_rds('scrape/afs_2024_talk_info.rds') #  #unnest(session_info) |
 #          title = glue("[{title}]({title_url})"),
 #          session = glue("[{session_name}]({session_url})"))
 
-by_name = all_talks |> arrange(author, title) |> 
-  select(author, affiliation, title = title_md,  #`start time` = start_time, `end time` = end_time,
-         date = print_date,time = short_times, room = session_room, session = session_md) |> rename_with(str_to_title)
+by_name = all_talks |> 
+  mutate(author_sort = author |> str_remove_all('"') |> str_to_sentence()) |> 
+  arrange(author_sort, title) |> 
+  select(author, author_sort, affiliation, title = title_md,  #`start time` = start_time, `end time` = end_time,
+         date = print_date,time = short_times, room = session_room, session = session_md) |> rename_with(str_to_title) |> 
+  filter(!is.na(Author))
 
-nested_name = by_name |> mutate(letter = substr(Author, 1, 1)) |> group_by(letter) |> nest() |> ungroup()
+nested_name = by_name |> mutate(letter = Author_sort|> substr(1, 1)) |> 
+  select(-Author_sort) |> 
+  group_by(letter) |> nest() |> ungroup()
 
 make_by_letter_section = \(letter, data, level = 1) {
   headline = c(rep('#', level), ' ', letter, '\n') |> paste(sep = '')
