@@ -1,11 +1,8 @@
 ---
 title: "Talks by Presenter's Last Name"
 output: 
-  html_document:
+  github_document:
     toc: true
-    toc_float: true
-  editor_options: 
-  chunk_output_type: console
 ---
 ```{r fn_def, echo = FALSE, }
 suppressPackageStartupMessages({
