@@ -1,0 +1,51 @@
+---
+title: "Talks by Presenter's First Name"
+output: 
+  html_document:
+    toc: true
+    toc_float: true
+  editor_options: 
+  chunk_output_type: console
+---
+```{r fn_def, echo = FALSE, }
+suppressPackageStartupMessages({
+  library(readr)
+  library(dplyr)
+  library(tidyr)
+  library(purrr)
+  library(knitr)
+  library(glue)
+  library(humaniformat)
+  library(stringr)
+  library(lubridate)
+})
+
+all_talks = read_rds('scrape/afs_2024_talk_info.rds') #  #unnest(session_info) |> 
+      # mutate(date = as_date(start_time)) |> 
+# by_author =  all_talks |> select(author, affiliation, times, numeric_date, session_room, title, session_name,session_id, abstract_id) |> 
+#   mutate(author = str_remove(author, ',.+') |> str_remove_all(fixed('(')) |> str_remove_all(fixed(')')),
+#          first = first_name(author), last = last_name(author) |> str_to_title(),
+#          date = numeric_date |> strftime('%a, %m/%d'),
+#          mdl = middle_name(author), mdl = if_else(is.na(mdl), '', paste0(' ', mdl)), 
+#          author_last = glue("{last}, {first}{mdl}"),
+#          session_url = glue('https://www.xcdsystem.com/afs/program/y7rKVr9/index.cfm?pgid=1485&sid={str_remove(session_id, "Sess")}'),
+#          title_url = glue('https://www.xcdsystem.com/afs/program/y7rKVr9/index.cfm?pgid=1485&sid={str_remove(session_id, "Sess")}&abid={abstract_id}'),
+#          title = glue("[{title}]({title_url})"),
+#          session = glue("[{session_name}]({session_url})"))
+
+by_name = all_talks |> arrange(author, title) |> 
+  select(author, affiliation, title = title_md,  #`start time` = start_time, `end time` = end_time,
+         date = print_date,time = short_times, room = session_room, session = session_md) |> rename_with(str_to_title)
+
+nested_name = by_name |> mutate(letter = substr(Author, 1, 1)) |> group_by(letter) |> nest() |> ungroup()
+
+make_by_letter_section = \(letter, data, level = 1) {
+  headline = c(rep('#', level), ' ', letter, '\n') |> paste(sep = '')
+  cat(headline)
+  data |> kable(escape = TRUE) |> print()
+}
+```
+
+```{r, results = 'asis', echo = FALSE}
+pwalk(nested_name, make_by_letter_section)
+```
